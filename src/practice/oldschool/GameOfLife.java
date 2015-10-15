@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferStrategy;
 
 /**
  * Created by yichen on 10/7/15.
@@ -24,6 +25,9 @@ public class GameOfLife extends Canvas implements Runnable, ActionListener {
 
     private JButton setButton;
     private JTextField updateIntervalText;
+
+    private BufferStrategy bs;
+    private Graphics g;
 
     private int[][] board = {
             {0, 1, 0, 1, 0, 1, 1, 0, 1, 1},
@@ -122,16 +126,52 @@ public class GameOfLife extends Canvas implements Runnable, ActionListener {
 
     }
 
+    private void render() {
+        bs = getBufferStrategy();
+        if (bs == null) {
+            createBufferStrategy(2);
+            bs = getBufferStrategy();
+        }
+
+        g = bs.getDrawGraphics();
+
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        // draw
+        int topPad = 10;
+        int leftPad = WIDTH / 2 - BOARD_WIDTH * CELL_SIZE / 2;
+
+        g.setColor(Color.BLACK);
+        for (int i = 0; i <= BOARD_HEIGHT; i++) {
+            g.drawLine(leftPad, topPad + CELL_SIZE * i, leftPad + BOARD_WIDTH * CELL_SIZE, topPad + CELL_SIZE * i);
+        }
+
+        for (int i = 0; i <= BOARD_WIDTH; i++) {
+            g.drawLine(leftPad + CELL_SIZE * i, topPad, leftPad + CELL_SIZE * i, topPad + BOARD_HEIGHT * CELL_SIZE);
+        }
+
+        g.setColor(Color.BLUE);
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == 1) {
+                    g.fillOval(j * CELL_SIZE + leftPad,  i * CELL_SIZE + topPad, CELL_SIZE, CELL_SIZE);
+                }
+            }
+        }
+
+        bs.show();
+        g.dispose();
+    }
+
     @Override
     public void run() {
 
         while(true) {
             try {
-                Thread.sleep((long) (updateInterval * 1000));
-
                 nextLife();
-
-                repaint();
+                render();
+                Thread.sleep((long) (updateInterval * 1000));
+//                repaint();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -139,6 +179,8 @@ public class GameOfLife extends Canvas implements Runnable, ActionListener {
 
     }
 
+    /*
+    @Override
     public void paint(Graphics g) {
 
         int topPad = 10;
@@ -163,6 +205,7 @@ public class GameOfLife extends Canvas implements Runnable, ActionListener {
         }
 
     }
+    */
 
     public static void main(String[] args) {
 
