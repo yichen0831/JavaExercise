@@ -105,3 +105,5 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+/nbproject/private/
+/build/
