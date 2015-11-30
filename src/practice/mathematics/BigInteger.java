@@ -36,12 +36,25 @@ public class BigInteger {
 		}
 
 		if (negative) {
-			toComp();
+			toComplement();
 		}
 	}
 	
 	public BigInteger(BigInteger other) {
 		values = new ArrayList<>(other.getValues());
+	}
+	
+	public BigInteger(List<Integer> integerList) {
+		values = new ArrayList<>();
+		int len = (integerList.size() / 8 + 1) * 8;
+		for (int i = 0; i < integerList.size(); i++) {
+			values.add(integerList.get(i));
+		}
+		
+		for (int i = integerList.size(); i < len; i++) {
+			values.add(new Integer(0));
+		}
+		surplusCheck();
 	}
 	
 	public Integer getIndex(int i) {
@@ -52,7 +65,7 @@ public class BigInteger {
 		return values.size();
 	}
 
-	public void add(BigInteger other) {
+	public BigInteger add(BigInteger other) {
 
 		List<Integer> tmp = new ArrayList<>();
 		
@@ -65,53 +78,83 @@ public class BigInteger {
 		
 		values = tmp;
 		surplusCheck();
+		return this;
 	}
 	
-	public void subtract(BigInteger other) {
+	public BigInteger subtract(BigInteger other) {
 		BigInteger otherTmp = new BigInteger(other);
-		otherTmp.toComp();
-		
-		add(otherTmp);
+		add(otherTmp.toComplement());
+		return this;
 	}
 	
-	public void multiply(BigInteger other) {
+	// for internal usage 
+	private BigInteger multiplyInternal(int value, int shift) { // value and shift must be positive numbers
 		List<Integer> tmp = new ArrayList<>();
+		
+		for(int i = 0; i < shift; i++) {
+			tmp.add(new Integer(0));
+		}
+		
+		for(int i = shift; i < getSize(); i++) {
+			tmp.add(new Integer(getIndex(i) * value));
+		}
+		
+		return new BigInteger(tmp);
+	}
+	
+	public BigInteger multiply(BigInteger other) {
+		List<BigInteger> tmp = new ArrayList<>();
 		
 		BigInteger otherTmp = new BigInteger(other);
 		boolean meNegative = isNegative();
 		boolean otherNegative = other.isNegative();
 		
 		if (meNegative) {
-			toComp();
+			toComplement();
 		}
 		
 		if (otherNegative) {
-			otherTmp.toComp();
+			otherTmp.toComplement();
 		}
 		
-		int len = Math.max(getSize(), other.getSize());
-		
-		for (int i = 0; i < len; i++) {
-			Integer result = (i < getSize() ? getIndex(i) : 0) * (i < otherTmp.getSize() ? otherTmp.getIndex(i) : 0);
-			tmp.add(result);
+		for (int i = 0; i < otherTmp.getSize(); i++) {
+			tmp.add(multiplyInternal(otherTmp.getIndex(i), i));
 		}
 		
-		values = tmp;
+		BigInteger result = new BigInteger("0");
+		for (BigInteger bigInteger : tmp) {
+			result.add(bigInteger);
+		}
+		
+		values = result.getValues();
+		
+		surplusCheck();
 		
 		if (meNegative ^ otherNegative) {
-			toComp();
+			toComplement();
 		}
-		surplusCheck();
+		return this;
 	}
 	
 	public List<Integer> getValues() {
 		return values;
 	}
+	
+	public boolean greaterThanOrEqualTo(BigInteger other) {
+		BigInteger tmp = new BigInteger(this);
+		return !tmp.subtract(other).isNegative();
+	}
+	
+	private boolean lessThanOrEqualToQuotient(BigInteger op1, BigInteger op2) {
+		return false;
+	}
 
-	public void toComp() {
+	public BigInteger toComplement() {
 		for (int i = 0; i < values.size(); i++) {
-			values.set(i, 9999 - values.get(i) + (i == 0 ? 1 : 0));
+			values.set(i, 9999 - values.get(i));
 		}
+		values.set(0, values.get(0) + 1);
+		return this;
 	}
 	
 	private void surplusCheck() {
@@ -165,14 +208,12 @@ public class BigInteger {
 	public static void main(String[] args) {
 		BigInteger a = new BigInteger("9999999999999999");
 		BigInteger b = new BigInteger("-1");
-		BigInteger c = new BigInteger("20");
-//		BigInteger d = new BigInteger("4");
-		a.add(b);
-		System.out.println("a: " + a.toString());
-		a.subtract(c);
-		System.out.println("a: " + a.toString());
-		b.multiply(c);
-		System.out.println("b: " + b.toString());
+		BigInteger c = new BigInteger("-4");
+		BigInteger d = new BigInteger("20");
+		
+		System.out.println("a + b: " + a.add(b));
+		System.out.println("b - c: " + b.subtract(c));
+		System.out.println("c * d: " + c.multiply(d));
 	}
 
 }
