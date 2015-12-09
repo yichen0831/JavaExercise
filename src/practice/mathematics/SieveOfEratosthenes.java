@@ -1,18 +1,38 @@
 package practice.mathematics;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class SieveOfEratosthenes {
 
     private boolean[] sieve;
-    private int maxNumber;
 
     public SieveOfEratosthenes(int maxNumber) {
-        this.maxNumber = maxNumber;
-        sieve = new boolean[maxNumber];
+        sieve = new boolean[maxNumber + 1];
         createSieve();
+    }
+    
+    public List<Integer> getPrimeList() {
+    	List<Integer> primeList = new ArrayList<>();
+    	for (int i = 0; i < sieve.length; i++) {
+    		if (sieve[i]) {
+				primeList.add(i);
+			}
+    	}
+    	return primeList;
     }
 
     private void createSieve() {
-        sieve[2] = sieve[3] = sieve[5] = true;
+    	if(sieve.length > 5 ) {
+    		sieve[2] = sieve[3] = sieve[5] = true;
+    	}
+    	else if (sieve.length > 3) {
+    		sieve[2] = sieve[3] = true;
+    	}
+    	else if (sieve.length > 2) {
+    		sieve[2] = true;
+    	}
 
         int i;
         for (i = 1; i * 6 + 5 < sieve.length; i++) {
