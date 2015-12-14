@@ -1,15 +1,25 @@
 package practice.oldschool;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Created by yichen on 10/4/15.
  */
 public class Pascal extends JFrame implements ActionListener {
 
+    private static final long serialVersionUID = 7226798677259002855L;
     JPanel panel;
     JTextField textField;
     JButton button;
@@ -36,9 +46,10 @@ public class Pascal extends JFrame implements ActionListener {
     }
 
     private class ResultCanvas extends Canvas {
+        private static final long serialVersionUID = -6124101721065267501L;
         int r;
         int width;
-        int height;
+//      int height;
 
 
         public ResultCanvas() {
@@ -48,7 +59,7 @@ public class Pascal extends JFrame implements ActionListener {
         public ResultCanvas(int r, int width, int height) {
             this.r = r;
             this.width = width;
-            this.height = height;
+//            this.height = height;
         }
 
         @Override

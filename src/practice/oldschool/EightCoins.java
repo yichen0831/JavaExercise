@@ -99,6 +99,7 @@ public class EightCoins {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Please enter the weight of the fake coin: ");
         int weight = scanner.nextInt();
+        scanner.close();
 
         EightCoins eightCoins = new EightCoins();
         eightCoins.setFakeCoinWeight(weight);

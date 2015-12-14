@@ -1,10 +1,18 @@
 package practice.oldschool;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  * Created by yichen on 10/7/15.
@@ -13,6 +21,7 @@ import java.awt.image.BufferStrategy;
  */
 public class GameOfLife extends Canvas implements Runnable, ActionListener {
 
+    private static final long serialVersionUID = -5974484773577780182L;
     private static final int WIDTH = 640;
     private static final int HEIGHT = 480;
 

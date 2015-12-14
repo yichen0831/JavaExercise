@@ -47,6 +47,8 @@ public class RandomWalk {
             currentY = n-1;
         }
 
+        scanner.close();
+        
         tile = new int[m][n];
         tilesLeft = m * n;
 
